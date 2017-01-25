@@ -1,4 +1,7 @@
-﻿using System;
+﻿//Program created by Reid Ball 
+//1/25/2017 
+//Keep'Em Away is a game where you try to kepp the ninjas away from you as long as possible
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,14 +13,15 @@ using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WMPLib;
 
 namespace ReidFinalProject
 {
     public partial class Form1 : Form
-    {
+    {   
+        //declaring all variables and creating all other components
         int spriteNeutral, spriteUp, spriteRight, spriteDown, spriteLeft, score;
-        Boolean aDown, sDown, dDown, wDown, ninjaLeft, ninjaRight, ninjaUp, ninjaDown, enemySpawn;
-        int ninjaSpeed;
+        Boolean aDown, sDown, dDown, wDown, enemySpawn;
 
         Image currentImage = Properties.Resources.start_image;
 
@@ -26,36 +30,30 @@ namespace ReidFinalProject
         int ninjaValue;
 
         Stopwatch time  = new Stopwatch();
-        SoundPlayer bgMusic = new SoundPlayer(Properties.Resources.Steven_Universe___The_Crystal_Gems_Chiptune_);
         SoundPlayer hitSound = new SoundPlayer(Properties.Resources.ROBLOX_Death_Sound);
 
         int newNinja = 4;
         int x1Ninja, x2Ninja, x3Ninja, x4Ninja;
         int y1Ninja, y2Ninja, y3Ninja, y4Ninja; 
 
-        Graphics formGraphics; 
+        WindowsMediaPlayer backMusicMP;
+
         public Form1()
         {
             InitializeComponent();
-            formGraphics = this.CreateGraphics();
-            ninjaSpeed = 100;
 
-            Thread bgm = new Thread(backMusic);
-            bgm.Start();
-            //Music.Play();
+            //background music plays
+            backMusicMP = new WindowsMediaPlayer();
+            backMusicMP.URL = "back.mp3";
+            backMusicMP.controls.play();
 
             x1Ninja = x2Ninja = x3Ninja = x4Ninja = y1Ninja = y2Ninja = y3Ninja = y4Ninja = -1000;
            
         }
 
-        public void backMusic()
-        {
-            bgMusic.Play();
-
-        }
-
         private void warriorPictureBox_Click(object sender, EventArgs e)
         {
+            //getting rid of unnecessary labels
             characterLabel.Visible = false;
             healerPictureBox.Visible = false;
             warriorPictureBox.Visible = false;
@@ -63,23 +61,28 @@ namespace ReidFinalProject
             replayButton.Visible = false;
             exitButton.Visible = false;
 
+            //setting sprite values
             spriteNeutral = 1;
             spriteUp = 1;
             spriteRight = 1;
             spriteDown = 1;
             spriteLeft = 1;
 
+            //start the timer
             gameTimer.Enabled = true;
             gameTimer.Start();
             time.Start();
 
+            //settin the charactrer
             currentImage = Properties.Resources.warrior_neutral;
 
+            //starting to spawn ninjas
             enemySpawn = true; 
         }
 
         private void healerPictureBox_Click(object sender, EventArgs e)
         {
+            //getting rid of unnecessary labels
             characterLabel.Visible = false;
             healerPictureBox.Visible = false;
             warriorPictureBox.Visible = false;
@@ -87,23 +90,28 @@ namespace ReidFinalProject
             replayButton.Visible = false;
             exitButton.Visible = false;
 
+            //setting sprite values
             spriteNeutral = 2;
             spriteUp = 2;
             spriteRight = 2;
             spriteDown = 2;
             spriteLeft = 2;
 
+            //start the timer
             gameTimer.Enabled = true;
             gameTimer.Start();
             time.Start();
 
+            //settin the charactrer
             currentImage = Properties.Resources.healer_neutral;
 
+            //starting to spawn ninjas
             enemySpawn = true;
         }
 
         private void replayButton_Click(object sender, EventArgs e)
-        {
+        { 
+            //button that becomes visible when player dies; allows player to play again
             characterLabel.Visible = true;
             healerPictureBox.Visible = true;
             warriorPictureBox.Visible = true;
@@ -113,13 +121,13 @@ namespace ReidFinalProject
             currentImage = Properties.Resources.start_image;
             x1Ninja = x2Ninja = x3Ninja = x4Ninja = y1Ninja = y2Ninja = y3Ninja = y4Ninja = -1000;
             score = 0;
-            bgMusic.Play();
             this.Focus(); 
             Refresh();
         }
 
         private void exitButton_Click(object sender, EventArgs e)
-        {
+        { 
+            //button that becomes visible when player loses; can close program
             this.Close();
         }
 
@@ -148,7 +156,7 @@ namespace ReidFinalProject
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-
+            //check to see if a key has been let go of and set is KeyDown value to false if it has
             switch (e.KeyCode)
             {
                 case Keys.A:
@@ -248,8 +256,9 @@ namespace ReidFinalProject
 
             if (newNinja == 40)
             {
+                //setting the ninja value
                 ninjaValue = randGen.Next(0, 4);
-                //ninjaValue = 0;
+
                 //if statements that check ninja value and set starting x and y for ninja
                 newNinja = 0;
 
@@ -384,6 +393,7 @@ namespace ReidFinalProject
             }
             #endregion
 
+            //changing the score
             scoreOutputLabel.Text = "" + score;
 
             newNinja++;
@@ -391,11 +401,13 @@ namespace ReidFinalProject
 
         }
 
-
+        //animations
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            //animates character sprite
             e.Graphics.DrawImage(currentImage, 217, 190, 70, 70); 
 
+            //animates ninja according random value
             if (enemySpawn == true && ninjaValue == 0)
             {
                 e.Graphics.DrawImage(Properties.Resources.ninja_left_1, x1Ninja, y1Ninja, 70, 70);
